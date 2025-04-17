@@ -218,6 +218,187 @@ def victim_play_audio_file(file):
     mixer.music.stop()
     mixer.music.unload()
 
+from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
+def analyser_echelle_de_polarite(transcript):
+    print('analyser_echelle_de_polarite')
+
+    # Initialiser l'analyseur de sentiment
+    analyzer = SentimentIntensityAnalyzer()
+
+    # Calculer les scores de sentiment pour la critique
+    polarite = analyzer.polarity_scores(transcript)
+
+    # Afficher les résultats de l'analyse de sentiment
+    print("Polarité : ", polarite) # Output: {'neg': 0.14, 'neu': 0.67, 'pos': 0.19, 'compound': 0.4215}
+
+import spacy
+def analyser_aspects_ou_caracteristiques(transcript):
+    print('analyser_aspects_ou_caracteristiques')
+
+    # Charger le modèle de langue anglais de spaCy
+    # https://spacy.io/models/fr#fr_core_news_sm
+    nlp = spacy.load("fr_core_news_lg")
+
+    # Traiter la critique avec le modèle NLP de spaCy
+    doc = nlp(transcript)
+
+    # Extraire les groupes nominaux (aspects) à partir du texte
+    aspects = [chunk.text for chunk in doc.noun_chunks]
+
+    # Afficher les aspects extraits
+    print("Aspects : ", aspects) # Output: ['The breakfast', 'the room service']
+
+from textblob import TextBlob
+def analyser_des_emotions(transcript):
+    print('analyser_des_emotions')
+
+    # Définir une critique pour l'analyse
+    review = "I'm extremely disappointed with the cleanliness of the bathroom."
+
+    # Analyser le sentiment de la critique avec TextBlob
+    blob = TextBlob(review)
+
+    emotions = blob.sentiment
+    # Afficher les résultats de l'analyse de sentiment
+    print(emotions)  # Output: Sentiment(polarity=-0.75, subjectivity=0.9)
+
+def analyse_de_urgence(transcript):
+    print('analyse_de_urgence')
+    # Liste des mots-clés associés à l'urgence
+    urgency_keywords = ["urgent", "immediate", "danger", "critical", "emergency", "asap"]
+
+    # Vérifier si un des mots-clés est présent dans la critique (sans tenir compte de la casse)
+    if any(keyword in transcript.lower() for keyword in urgency_keywords):
+        return print("Urgent : ", True) # Output: Urgent : True
+    return print("Urgent : ", False) # Output: Urgent : False
+
+def analyse_de_intention(transcript):
+    print('analyse_de_intention')
+    # Mots-clés associés aux différentes intentions possibles
+    intent_keywords = {
+        "inquiry": ["information", "want to know", "could you", "tell me"],
+        "complaint": ["not satisfied", "issue", "problem", "disappointed"],
+        "suggestion": ["could improve", "should consider", "it would help if"],
+        "compliment": ["great", "wonderful", "fantastic", "thank you"]
+    }
+
+    # Vérifier si un des mots-clés est présent et retourner l'intention correspondante
+    for intent, keywords in intent_keywords.items():
+        if any(keyword in transcript.lower() for keyword in keywords):
+            return print("Intention : ", intent) # Output: Intention : inquiry
+        
+    return print("Intention : ", "unknown") # Output: Intention : unknown
+
+from transformers import pipeline
+def analyser_avec_modele_pre_entraine(transcript):
+    print('analyser_avec_modele_pre_entraine')
+
+    # Charger un modèle pré-entraîné pour la classification de texte
+    classifier = pipeline("text-classification", model="distilbert-base-uncased")
+
+    # Classifier l'intention ou le ton des avis
+    result = classifier(transcript)
+
+    # Afficher les résultats avec exemples d'output
+    print("Review 1 urgence détectée:", result)
+
+import nltk
+nltk.download('punkt_tab')
+from nltk.tokenize import word_tokenize
+from transformers import pipeline
+def analyse_avec_NLP(transcript):
+    print('analyse_avec_NLP')
+
+    # Charger un modèle d'analyse de sentiment pré-entraîné
+    sentiment_analyzer = pipeline("sentiment-analysis",
+                                   model="nlptown/bert-base-multilingual-uncased-sentiment")
+
+    # Tokenisation
+    # Tokeniser la critique en mots individuels
+    tokens = word_tokenize(transcript)
+
+    # Normalisation
+    normalized_tokens = [token.lower() for token in tokens]
+
+    # Correction orthographique simplifiée
+    normalized_tokens = ["hôtel" if token == "hotel" else token for token in normalized_tokens]
+
+    import string
+    # Nettoyage en supprimant la ponctuation
+    clean_tokens = [token for token in normalized_tokens if token not in string.punctuation]
+
+    # Reconstituer la critique nettoyée
+    clean_review = " ".join(clean_tokens)
+
+    # Analyser le sentiment
+    sentiment_result = sentiment_analyzer(clean_review)
+
+    # Afficher le résultat de l'analyse de sentiment
+    print(f"Critique nettoyée : {clean_review}")
+    # Output: Critique nettoyée : xxx
+
+    print(f"Résultat de l'analyse : {sentiment_result}")
+    # Output: Résultat de l'analyse : [{'label': '2 stars', 'score': 0.85}]
+
+from transformers import pipeline
+def analyser_subtilites_contextuelles_et_sarcasme(transcript):
+    print('analyser_subtilites_contextuelles_et_sarcasme')
+
+    # Chargement du modèle pré-entraîné pour la détection du sarcasme
+    sarcasm_detector = pipeline("text-classification", model="mrm8488/bert-tiny-finetuned-sarcasm")
+
+    # Détection du sarcasme
+    result = sarcasm_detector(transcript)
+
+    # Affichage des résultats avec exemples d'output
+    print(f"Critique : {transcript}")
+
+    print(f"Résultat de la détection : {result}")
+    # Output: Résultat de la détection : [{'label': 'sarcasm', 'score': 0.95}]
+
+def interpret_sentiment(score):
+    # Fonction pour interpréter le score de sentiment en catégories
+    if score > 0.6:
+        return "Positive"
+    elif 0.3 <= score <= 0.6:
+        return "Neutral"
+    else:
+        return "Negative"
+    
+def analyser_les_sentiments(transcript):
+    # Analyser les sentiments de la critique
+    # Cette fonction va analyser les sentiments de la critique
+    analyser_echelle_de_polarite(transcript)
+
+    # Analyser les aspects ou caractéristiques de la critique
+    # Cette fonction va analyser les aspects ou caractéristiques de la critique
+    analyser_aspects_ou_caracteristiques(transcript)
+
+    # Analyser les émotions de la critique
+    # Cette fonction va analyser les émotions de la critique
+    analyser_des_emotions(transcript)
+
+    # Analyser l'urgence de la critique
+    # Cette fonction va analyser l'urgence de la critique
+    analyse_de_urgence(transcript)
+
+    # Analyser l'intention de la critique
+    # Cette fonction va analyser l'intention de la critique
+    analyse_de_intention(transcript)
+
+    # Analyser la critique avec un modèle pré-entraîné
+    # Cette fonction va analyser la critique avec un modèle pré-entraîné
+    analyser_avec_modele_pre_entraine(transcript)
+
+    # Analyser la critique avec un modèle NLP
+    # Cette fonction va analyser la critique avec un modèle NLP
+    analyse_avec_NLP(transcript)
+
+    # Analyser les subtilités contextuelles et le sarcasme de la critique
+    # Cette fonction va analyser les subtilités contextuelles et le sarcasme de la critique
+    #analyser_subtilites_contextuelles_et_sarcasme(transcript)
+    
+
 # Initialize the Pygame mixer
 # This is used to play the audio file generated by the TTS client
 mixer.init()
@@ -234,15 +415,19 @@ while True:
     # Get transcript of the escroc input
     escroc_transcript = escroc_input.results[0].alternatives[0].transcript
     print("Escroc : ", escroc_transcript)
-    
-    # Save the escroc message history
-    save_message_history("user", escroc_transcript)
 
     # Check if the escroc said "stop" to break the loop
     # This is a simple check to see if the escroc said "stop"
     substring = "stop"
     if substring in escroc_transcript:
         break
+    
+    # Save the escroc message history
+    save_message_history("user", escroc_transcript)
+
+    # Analyse the escroc input to check for sentiment
+    # This function will be called to analyze the sentiment of the escroc input
+    analyser_les_sentiments(escroc_transcript)
 
     # Get AI input from the victim
     victim_input = victim_get_AI_input(messages)
