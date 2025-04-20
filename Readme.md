@@ -110,4 +110,4 @@ No license...
 ## Acknowledgments
 - Hugging Face for the LLM API.
 - Google Cloud for Speech-to-Text and Text-to-Speech services.
-- Open-source NLP libraries like spaCy, TextBlob, and Transformers.
+- Open-source NLP libraries like spaCy, TextBlob, and Transformers. 
