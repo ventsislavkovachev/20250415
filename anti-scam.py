@@ -231,12 +231,16 @@ def analyser_echelle_de_polarite(transcript):
     # Afficher les résultats de l'analyse de sentiment
     print("Polarité : ", polarite) # Output: {'neg': 0.14, 'neu': 0.67, 'pos': 0.19, 'compound': 0.4215}
 
+    update_polarite=interpret_sentiment(polarite['compound'])
+    
+    save_message_history('system', update_polarite)
+
 import spacy
 def analyser_aspects_ou_caracteristiques(transcript):
     print('analyser_aspects_ou_caracteristiques')
 
     # Charger le modèle de langue anglais de spaCy
-    # https://spacy.io/models/fr#fr_core_news_sm
+    # https://spacy.io/models/fr#fr_core_news_lg
     nlp = spacy.load("fr_core_news_lg")
 
     # Traiter la critique avec le modèle NLP de spaCy
@@ -265,7 +269,22 @@ def analyser_des_emotions(transcript):
 def analyse_de_urgence(transcript):
     print('analyse_de_urgence')
     # Liste des mots-clés associés à l'urgence
-    urgency_keywords = ["urgent", "immediate", "danger", "critical", "emergency", "asap"]
+    urgency_keywords = [
+        "urgent", "urgence", "immédiat", "immédiate", "immédiatement",
+        "immédiatement", "urgence", "urgentement", "immédiatement", "immédiatement",
+        "immédiatement", "immédiatement", "immédiatement", "immédiatement",
+        "danger", "dangerous", "dangerous", "critical", "critique",
+        "critiques", "critique", "critique", "critiques",
+        "critiques", "critique", "critiques", "critiques",
+        "critique", "critiques", "critiques", "critiques",
+        "essentiel", "essentielle", "essentiellement", "essentiellement",
+        "essentiellement", "essentiellement", "essentiellement", "essentiellement",
+        "essentiellement", "crucial", "cruciale", "crucialement",
+        "grave", "grave", "graves", "graves", "graves",
+        "graves", "graves", "graves", "graves",
+        "urgence", "urgente", "urgentes", "urgentes", "urgentes",
+        "urgentes", "urgentes", "urgentes", "urgentes"
+        ]
 
     # Vérifier si un des mots-clés est présent dans la critique (sans tenir compte de la casse)
     if any(keyword in transcript.lower() for keyword in urgency_keywords):
@@ -276,10 +295,13 @@ def analyse_de_intention(transcript):
     print('analyse_de_intention')
     # Mots-clés associés aux différentes intentions possibles
     intent_keywords = {
-        "inquiry": ["information", "want to know", "could you", "tell me"],
-        "complaint": ["not satisfied", "issue", "problem", "disappointed"],
-        "suggestion": ["could improve", "should consider", "it would help if"],
-        "compliment": ["great", "wonderful", "fantastic", "thank you"]
+        "inquiry": ["demande", "question", "information", "enquête"],
+        "réclamation": ["réclamation", "plainte", "insatisfaction", "insatisfait"],
+        "suggestion": ["suggestion", "recommandation", "conseil", "proposition"],
+        "remerciement": ["merci", "remerciements", "appréciation", "gratitude"],
+        "avis": ["avis", "opinion", "retour", "feedback"],
+        "complaint": ["plainte", "réclamation", "insatisfaction", "mécontentement"],
+        "compliment": ["compliment", "appréciation", "remerciement", "félicitations"]
     }
 
     # Vérifier si un des mots-clés est présent et retourner l'intention correspondante
@@ -358,12 +380,20 @@ def analyser_subtilites_contextuelles_et_sarcasme(transcript):
 
 def interpret_sentiment(score):
     # Fonction pour interpréter le score de sentiment en catégories
+    
     if score > 0.6:
-        return "Positive"
-    elif 0.3 <= score <= 0.6:
-        return "Neutral"
+        return \
+        "Tu parle avec une voix encore plus douce et amicale." \
+        "Tu sourit encore plus en parlant."
+    elif 0.3 <= score <= 0.6: 
+        return ""
     else:
-        return "Negative"
+        return \
+        "Tu arret a parler avec une voix douce et amicale." \
+        "Tu arret la sourire en parlant." \
+        "Tu arret de parler lentement et articuler." \
+        "Tu arret de faire des pauses et hésiter parfois." \
+        "Tu arret d'être très enthousiaste et très intéressé par ce que dit l'escroc."
     
 def analyser_les_sentiments(transcript):
     # Analyser les sentiments de la critique
