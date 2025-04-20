@@ -105,7 +105,7 @@ This project aims to develop an AI-powered tool to waste the time of phone scamm
 - Ventsislav Kovachev
 
 ## License
-This project is licensed under [Your Chosen License].
+No license...
 
 ## Acknowledgments
 - Hugging Face for the LLM API.
